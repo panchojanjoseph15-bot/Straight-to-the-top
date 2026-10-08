@@ -18,7 +18,37 @@ import {
 import { calculateMonthStats, formatDateKey } from './utils/calendar';
 import { INITIAL_SEED_RECORDS } from './data/seedData';
 
+import { LandingPage } from './components/LandingPage';
+
 export const App: React.FC = () => {
+  const [currentView, setCurrentView] = useState<'landing' | 'app'>(() => {
+    return window.location.hash === '#app' ? 'app' : 'landing';
+  });
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash === '#app') {
+        setCurrentView('app');
+      } else if (!window.location.hash || window.location.hash === '#home' || window.location.hash === '#') {
+        setCurrentView('landing');
+      }
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const navigateToApp = () => {
+    setCurrentView('app');
+    window.location.hash = 'app';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const navigateToLanding = () => {
+    setCurrentView('landing');
+    window.location.hash = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   // We use October 6, 2026 as the active base date to match the user's mockup & notes
   const [todayDateStr, setTodayDateStr] = useState<string>('2026-10-06');
   const [selectedDateStr, setSelectedDateStr] = useState<string>('2026-10-04');
@@ -211,6 +241,10 @@ export const App: React.FC = () => {
   const completedTodayCount = todayRecord.tasks.filter(t => t.completed).length;
   const ratioString = todayRecord.tasks.length > 0 ? `${completedTodayCount}/${todayRecord.tasks.length}` : '';
 
+  if (currentView === 'landing') {
+    return <LandingPage onLaunchApp={navigateToApp} />;
+  }
+
   return (
     <div className="min-h-screen bg-[#0b0e14] text-slate-100 flex flex-col justify-between selection:bg-sky-500/30 selection:text-white">
       <div className="max-w-7xl mx-auto w-full px-3 sm:px-6 py-5 sm:py-7 flex-1 flex flex-col">
@@ -220,6 +254,7 @@ export const App: React.FC = () => {
           onResetSeedData={handleResetSeedData}
           onSimulateNextDay={handleSimulateNextDay}
           onExportData={() => exportDataAsJSON(records)}
+          onBackToLanding={navigateToLanding}
         />
 
         {/* Desktop View: Three Column Artboard Layout */}

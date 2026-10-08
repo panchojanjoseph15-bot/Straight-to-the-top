@@ -6,6 +6,7 @@ interface HeaderProps {
   onResetSeedData: () => void;
   onSimulateNextDay: () => void;
   onExportData: () => void;
+  onBackToLanding: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -13,6 +14,7 @@ export const Header: React.FC<HeaderProps> = ({
   onResetSeedData,
   onSimulateNextDay,
   onExportData,
+  onBackToLanding,
 }) => {
   const [showHelp, setShowHelp] = useState(false);
 
@@ -43,6 +45,14 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       <div className="flex items-center gap-2 self-end sm:self-auto flex-wrap">
+        <button
+          onClick={onBackToLanding}
+          title="Return to the Landing Page / Website"
+          className="px-3 py-1.5 text-xs font-semibold bg-surface hover:bg-surfaceHover border border-sky-500/40 rounded-lg text-sky-400 hover:text-sky-300 flex items-center gap-1.5 transition-all shadow-sm"
+        >
+          <span>← Website</span>
+        </button>
+
         <button
           onClick={onSimulateNextDay}
           title="Simulate advancing to next day (test rollover & presets)"
