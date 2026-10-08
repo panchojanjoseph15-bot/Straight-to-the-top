@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Straight to the Top ⇡
 
 > A GitHub-inspired daily habit tracker and reflection journal built for continuous, visible self-improvement.
@@ -142,3 +143,7 @@ straight-to-the-top/
 ## 📄 License
 
 MIT License — feel free to use, modify, and build upon this project!
+=======
+# Straight-to-the-top
+An early version of application
+>>>>>>> 59ecf8c67bb528807e4bf6b99d241482a6aa7460
