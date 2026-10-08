@@ -1,0 +1,24 @@
+# Cursor Project Rules: Straight to the Top
+
+## Architecture & Tech Stack
+- Framework: React 18 with TypeScript and Vite
+- Styling: Tailwind CSS (dark mode theme by default, matching #0d1117 palette)
+- Icons: Lucide React (`lucide-react`)
+- Celebrations: `canvas-confetti`
+
+## Key Concepts & Domain Rules
+1. GitHub-style Habit Heatmap:
+   - Monthly grid with 4-tier color grading + count labels (`3/5`):
+     - Red: 0% done
+     - Orange: 1% - 49%
+     - Yellow: 50% - 99%
+     - Green: 100%
+     - Dark Gray: No tasks scheduled
+2. Daily Reset & Historical Snapshots:
+   - Unfinished tasks from today do NOT carry over to tomorrow.
+   - When a day ends, its completed/missed tasks and reflection are frozen into permanent history.
+   - "Set tasks for tomorrow" allows presetting tomorrow's routine ahead of time.
+3. The Climb:
+   - Mountain SVG progress visualizer that advances from Base Camp -> Mid-Climb -> Summit based on daily streak consistency (>=50% Yellow/Green).
+4. Local Storage:
+   - Local-first architecture using `localStorage` (`src/utils/storage.ts`).
