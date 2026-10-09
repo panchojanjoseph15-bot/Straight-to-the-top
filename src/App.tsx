@@ -15,9 +15,7 @@ import {
   handleDailyRollover,
   exportDataAsJSON,
 } from './utils/storage';
-import { calculateMonthStats, formatDateKey } from './utils/calendar';
-import { INITIAL_SEED_RECORDS } from './data/seedData';
-
+import { calculateMonthStats, formatDateKey, getTodayDateString } from './utils/calendar';
 import { LandingPage } from './components/LandingPage';
 
 export const App: React.FC = () => {
@@ -49,13 +47,16 @@ export const App: React.FC = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // We use October 6, 2026 as the active base date to match the user's mockup & notes
-  const [todayDateStr, setTodayDateStr] = useState<string>('2026-10-06');
-  const [selectedDateStr, setSelectedDateStr] = useState<string>('2026-10-04');
+  // Dynamically set to user's real regional current date
+  const initialTodayStr = getTodayDateString();
+  const [initialY, initialM] = [new Date().getFullYear(), new Date().getMonth()];
+
+  const [todayDateStr, setTodayDateStr] = useState<string>(initialTodayStr);
+  const [selectedDateStr, setSelectedDateStr] = useState<string>(initialTodayStr);
   
-  // Year & Month for the calendar view (October = month index 9)
-  const [viewYear, setViewYear] = useState<number>(2026);
-  const [viewMonth, setViewMonth] = useState<number>(9);
+  // Year & Month for the calendar view (defaults to current month)
+  const [viewYear, setViewYear] = useState<number>(initialY);
+  const [viewMonth, setViewMonth] = useState<number>(initialM);
 
   // Core records storage
   const [records, setRecords] = useState<Record<string, DayRecord>>(() => {
@@ -225,16 +226,19 @@ export const App: React.FC = () => {
     saveStoredRecords(newRecords);
   };
 
-  // Reset demo seed data
-  const handleResetSeedData = () => {
-    if (window.confirm('Reset app data back to the demo showcase matching the mockups?')) {
+  // Clear all tasks for a completely fresh start
+  const handleClearAllData = () => {
+    if (window.confirm('Clear all tasks and start fresh? This will remove all habits and reset history.')) {
       localStorage.clear();
-      setRecords(INITIAL_SEED_RECORDS);
-      saveStoredRecords(INITIAL_SEED_RECORDS);
-      setTodayDateStr('2026-10-06');
-      setSelectedDateStr('2026-10-04');
-      setViewYear(2026);
-      setViewMonth(9);
+      const empty: Record<string, DayRecord> = {};
+      setRecords(empty);
+      saveStoredRecords(empty);
+      const today = getTodayDateString();
+      const [nowY, nowM] = [new Date().getFullYear(), new Date().getMonth()];
+      setTodayDateStr(today);
+      setSelectedDateStr(today);
+      setViewYear(nowY);
+      setViewMonth(nowM);
     }
   };
 
@@ -251,7 +255,7 @@ export const App: React.FC = () => {
         {/* Top Header */}
         <Header
           currentDateStr={todayDateStr}
-          onResetSeedData={handleResetSeedData}
+          onResetSeedData={handleClearAllData}
           onSimulateNextDay={handleSimulateNextDay}
           onExportData={() => exportDataAsJSON(records)}
           onBackToLanding={navigateToLanding}

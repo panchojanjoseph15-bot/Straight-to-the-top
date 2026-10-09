@@ -1,5 +1,4 @@
 import { DayRecord, TaskItem } from '../types';
-import { INITIAL_SEED_RECORDS, createDefaultTasks } from '../data/seedData';
 
 const RECORDS_KEY = 'stt_records_v1';
 const TOMORROW_PRESET_KEY = 'stt_tomorrow_preset_v1';
@@ -9,14 +8,13 @@ export function loadStoredRecords(): Record<string, DayRecord> {
   try {
     const raw = localStorage.getItem(RECORDS_KEY);
     if (!raw) {
-      // First run: save seed records
-      localStorage.setItem(RECORDS_KEY, JSON.stringify(INITIAL_SEED_RECORDS));
-      return INITIAL_SEED_RECORDS;
+      // Brand new install: starts completely empty
+      return {};
     }
     return JSON.parse(raw);
   } catch (err) {
     console.error('Failed to load records from localStorage', err);
-    return INITIAL_SEED_RECORDS;
+    return {};
   }
 }
 
@@ -31,10 +29,10 @@ export function saveStoredRecords(records: Record<string, DayRecord>): void {
 export function loadTomorrowPreset(): TaskItem[] {
   try {
     const raw = localStorage.getItem(TOMORROW_PRESET_KEY);
-    if (!raw) return createDefaultTasks();
+    if (!raw) return [];
     return JSON.parse(raw);
   } catch {
-    return createDefaultTasks();
+    return [];
   }
 }
 

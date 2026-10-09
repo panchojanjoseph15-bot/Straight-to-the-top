@@ -22,12 +22,11 @@ interface LandingPageProps {
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
+  const WINDOWS_DOWNLOAD_URL = 'https://github.com/panchojanjoseph15-bot/Straight-to-the-top/releases/download/v0.1.0/Straight.to.the.Top.Setup.0.1.0.exe';
+
   const handleDownloadWindows = () => {
-    // Check if electron build executable exists or trigger download
-    const link = document.createElement('a');
-    link.href = '#download-center';
-    // Smooth scroll to download center
-    document.getElementById('download-center')?.scrollIntoView({ behavior: 'smooth' });
+    // Trigger direct download from GitHub Releases
+    window.open(WINDOWS_DOWNLOAD_URL, '_blank');
   };
 
   return (
@@ -414,12 +413,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
 
               <div className="pt-6 space-y-2">
                 <a
-                  href="#download-windows-action"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    // Trigger download helper
-                    alert("To package the .exe installer:\nRun 'npm run electron:build' in your terminal!\n\nYou can also launch the Web App directly right now!");
-                  }}
+                  href={WINDOWS_DOWNLOAD_URL}
+                  download
                   className="w-full py-3 px-4 rounded-xl font-bold text-xs bg-sky-400 hover:bg-sky-300 text-slate-950 flex items-center justify-center gap-2 transition-all shadow-md shadow-sky-500/20"
                 >
                   <Download className="w-4 h-4 stroke-[2.5]" />
@@ -567,7 +562,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             <a href="#download-center" className="hover:text-slate-300 transition-colors">
               Downloads
             </a>
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="hover:text-slate-300 transition-colors">
+            <a href="https://github.com/panchojanjoseph15-bot/Straight-to-the-top" target="_blank" rel="noreferrer" className="hover:text-slate-300 transition-colors">
               GitHub
             </a>
           </div>

@@ -73,11 +73,11 @@ export const Header: React.FC<HeaderProps> = ({
 
         <button
           onClick={onResetSeedData}
-          title="Reset to demo sample data"
+          title="Clear all tasks and start fresh"
           className="p-1.5 sm:px-3 sm:py-1.5 text-xs font-semibold bg-surface hover:bg-surfaceHover border border-border rounded-lg text-slate-300 hover:text-white flex items-center gap-1.5 transition-all shadow-sm"
         >
           <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
-          <span className="hidden sm:inline">Reset Demo</span>
+          <span className="hidden sm:inline">Clear Data</span>
         </button>
 
         <button
