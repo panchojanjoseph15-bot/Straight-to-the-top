@@ -27,11 +27,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Ensure Electron binary is installed
+        run: node node_modules/electron/install.js
+
       - name: Build web application
         run: npm run build
 
       - name: Build Electron Windows executable
-        run: npm run electron:build
+        run: npx electron-builder --win --publish never
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
