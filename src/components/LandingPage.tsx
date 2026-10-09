@@ -22,8 +22,8 @@ interface LandingPageProps {
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
-  const WINDOWS_DOWNLOAD_URL = 'https://github.com/panchojanjoseph15-bot/Straight-to-the-top/releases/download/v0.1.0/Straight.to.the.Top.Setup.0.1.0.exe';
-  const WINDOWS_PORTABLE_URL = 'https://github.com/panchojanjoseph15-bot/Straight-to-the-top/releases/download/v0.1.0/Straight.to.the.Top.0.1.0.exe';
+  const WINDOWS_DOWNLOAD_URL = 'https://github.com/panchojanjoseph15-bot/Straight-to-the-top/releases/latest/download/Straight.to.the.Top.Setup.0.1.0.exe';
+  const WINDOWS_PORTABLE_URL = 'https://github.com/panchojanjoseph15-bot/Straight-to-the-top/releases/latest/download/Straight.to.the.Top.0.1.0.exe';
 
   // PWA & Mobile Installation state
   const [deferredPrompt, setDeferredPrompt] = React.useState<any>(null);
