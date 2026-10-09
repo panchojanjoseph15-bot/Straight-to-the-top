@@ -1,0 +1,24 @@
+{
+  "name": "Straight to the Top",
+  "short_name": "Straight to Top",
+  "description": "A GitHub-inspired daily habit tracker and reflection journal.",
+  "start_url": "/#app",
+  "display": "standalone",
+  "background_color": "#0b0e14",
+  "theme_color": "#0b0e14",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

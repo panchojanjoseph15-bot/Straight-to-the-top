@@ -23,10 +23,46 @@ interface LandingPageProps {
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
   const WINDOWS_DOWNLOAD_URL = 'https://github.com/panchojanjoseph15-bot/Straight-to-the-top/releases/download/v0.1.0/Straight.to.the.Top.Setup.0.1.0.exe';
+  const WINDOWS_PORTABLE_URL = 'https://github.com/panchojanjoseph15-bot/Straight-to-the-top/releases/download/v0.1.0/Straight.to.the.Top.0.1.0.exe';
 
-  const handleDownloadWindows = () => {
-    // Trigger direct download from GitHub Releases
-    window.open(WINDOWS_DOWNLOAD_URL, '_blank');
+  // PWA & Mobile Installation state
+  const [deferredPrompt, setDeferredPrompt] = React.useState<any>(null);
+  const [showIosModal, setShowIosModal] = React.useState<boolean>(false);
+  const [isInstalled, setIsInstalled] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    window.addEventListener('appinstalled', () => {
+      setIsInstalled(true);
+      setDeferredPrompt(null);
+    });
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallMobile = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      if (choice.outcome === 'accepted') {
+        setIsInstalled(true);
+      }
+      setDeferredPrompt(null);
+    } else {
+      const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+      if (isIos) {
+        setShowIosModal(true);
+      } else {
+        onLaunchApp();
+      }
+    }
   };
 
   return (
@@ -54,8 +90,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
 
           <div className="flex items-center gap-3">
             <a
-              href="#download-center"
-              onClick={handleDownloadWindows}
+              href={WINDOWS_DOWNLOAD_URL}
+              download="Straight-to-the-Top-Setup-0.1.0.exe"
               className="hidden sm:flex items-center gap-2 px-3.5 py-2 text-xs font-semibold bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] rounded-xl text-slate-200 hover:text-white transition-all shadow-sm"
             >
               <Download className="w-3.5 h-3.5 text-sky-400" />
@@ -101,8 +137,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           {/* CTA Buttons */}
           <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3.5">
             <a
-              href="#download-center"
-              onClick={handleDownloadWindows}
+              href={WINDOWS_DOWNLOAD_URL}
+              download="Straight-to-the-Top-Setup-0.1.0.exe"
               className="w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold text-sm bg-sky-400 hover:bg-sky-300 text-slate-950 flex items-center justify-center gap-2.5 transition-all shadow-lg shadow-sky-500/25 hover:scale-[1.02]"
             >
               <Download className="w-4 h-4 stroke-[2.5]" />
@@ -110,11 +146,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
             </a>
 
             <button
+              onClick={handleInstallMobile}
+              className="w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold text-sm bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 text-purple-200 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02]"
+            >
+              <Smartphone className="w-4 h-4 text-purple-400" />
+              <span>{isInstalled ? 'Mobile Installed ✓' : 'Install on Phone'}</span>
+            </button>
+
+            <button
               onClick={onLaunchApp}
               className="w-full sm:w-auto px-6 py-3.5 rounded-xl font-bold text-sm bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-white flex items-center justify-center gap-2.5 transition-all shadow-sm hover:scale-[1.02]"
             >
               <Globe className="w-4 h-4 text-sky-400" />
-              <span>Try Live in Browser</span>
+              <span>Launch Web App</span>
             </button>
           </div>
 
@@ -411,17 +455,35 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                 </div>
               </div>
 
-              <div className="pt-6 space-y-2">
+              <div className="pt-6 space-y-2.5">
                 <a
                   href={WINDOWS_DOWNLOAD_URL}
-                  download
+                  download="Straight-to-the-Top-Setup-0.1.0.exe"
                   className="w-full py-3 px-4 rounded-xl font-bold text-xs bg-sky-400 hover:bg-sky-300 text-slate-950 flex items-center justify-center gap-2 transition-all shadow-md shadow-sky-500/20"
                 >
                   <Download className="w-4 h-4 stroke-[2.5]" />
-                  <span>Download .exe (v0.1)</span>
+                  <span>Download Installer (.exe)</span>
                 </a>
+                <div className="flex items-center justify-center gap-3 text-[11px] text-slate-400 pt-1">
+                  <a
+                    href={WINDOWS_PORTABLE_URL}
+                    download="Straight-to-the-Top-Portable-0.1.0.exe"
+                    className="hover:text-sky-300 underline underline-offset-2 transition-colors"
+                  >
+                    Portable .exe
+                  </a>
+                  <span>·</span>
+                  <a
+                    href="https://github.com/panchojanjoseph15-bot/Straight-to-the-top/releases"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-sky-300 underline underline-offset-2 transition-colors"
+                  >
+                    GitHub Releases
+                  </a>
+                </div>
                 <p className="text-[10px] text-center text-slate-500 font-mono">
-                  SHA-256 Verified · 100% Free
+                  SHA-256 Verified · 100% Free & Open Source
                 </p>
               </div>
             </div>
@@ -447,22 +509,28 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Android: One-Tap Install</span>
+                    <span>Android: 1-Tap Home Screen Install</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Works completely offline</span>
+                    <span>Works completely offline without store</span>
                   </div>
                 </div>
               </div>
 
-              <div className="pt-6">
+              <div className="pt-6 space-y-2">
+                <button
+                  onClick={handleInstallMobile}
+                  className="w-full py-3 px-4 rounded-xl font-bold text-xs bg-purple-500 hover:bg-purple-400 text-slate-950 flex items-center justify-center gap-2 transition-all shadow-md shadow-purple-500/20"
+                >
+                  <Smartphone className="w-4 h-4 text-slate-950" />
+                  <span>{isInstalled ? 'App Installed ✓' : deferredPrompt ? 'Install on Android' : 'Install / Open on Mobile'}</span>
+                </button>
                 <button
                   onClick={onLaunchApp}
-                  className="w-full py-3 px-4 rounded-xl font-bold text-xs bg-[#21262d] hover:bg-[#30363d] text-slate-200 hover:text-white flex items-center justify-center gap-2 transition-all border border-[#30363d]"
+                  className="w-full py-2 px-3 text-[11px] text-slate-400 hover:text-white transition-colors text-center"
                 >
-                  <Smartphone className="w-4 h-4 text-purple-400" />
-                  <span>Open Mobile Experience</span>
+                  Or launch mobile web app in browser →
                 </button>
               </div>
             </div>
@@ -568,6 +636,64 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onLaunchApp }) => {
           </div>
         </div>
       </footer>
+      {/* 8. iOS Add to Home Screen Modal */}
+      {showIosModal && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-4">
+          <div className="bg-[#161b22] border border-[#30363d] rounded-2xl p-6 max-w-md w-full space-y-4 shadow-2xl animate-in fade-in slide-in-from-bottom-4 duration-200">
+            <div className="flex items-center justify-between pb-2 border-b border-[#30363d]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-purple-500/20 border border-purple-500/30 flex items-center justify-center text-purple-400">
+                  <Smartphone className="w-4 h-4" />
+                </div>
+                <h3 className="font-bold text-white text-sm">Install on iPhone / iPad</h3>
+              </div>
+              <button
+                onClick={() => setShowIosModal(false)}
+                className="text-slate-400 hover:text-white p-1 text-sm font-bold"
+              >
+                ✕
+              </button>
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Apple requires saving web apps via Safari to install them to your Home Screen:
+            </p>
+
+            <div className="space-y-3 text-xs bg-[#0d1117] p-3.5 rounded-xl border border-[#30363d]">
+              <div className="flex items-start gap-3">
+                <span className="w-5 h-5 rounded-full bg-purple-500/20 text-purple-400 font-bold flex items-center justify-center shrink-0 text-[10px]">1</span>
+                <p className="text-slate-300">
+                  Tap the <strong className="text-white">Share</strong> button at the bottom of Safari (<span className="text-sky-400 font-mono">⎋</span> or square with arrow).
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="w-5 h-5 rounded-full bg-purple-500/20 text-purple-400 font-bold flex items-center justify-center shrink-0 text-[10px]">2</span>
+                <p className="text-slate-300">
+                  Scroll down the menu and tap <strong className="text-white">'Add to Home Screen'</strong> (<span className="text-emerald-400 font-mono">⊕</span>).
+                </p>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="w-5 h-5 rounded-full bg-purple-500/20 text-purple-400 font-bold flex items-center justify-center shrink-0 text-[10px]">3</span>
+                <p className="text-slate-300">
+                  Tap <strong className="text-white">'Add'</strong> in the top-right corner.
+                </p>
+              </div>
+            </div>
+
+            <div className="pt-2 flex gap-2">
+              <button
+                onClick={() => {
+                  setShowIosModal(false);
+                  onLaunchApp();
+                }}
+                className="w-full py-2.5 rounded-xl font-bold text-xs bg-sky-400 hover:bg-sky-300 text-slate-950 transition-all text-center"
+              >
+                Open Web App Now
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
